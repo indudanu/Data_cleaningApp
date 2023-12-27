@@ -3,17 +3,12 @@ import time
 import fitz
 
 def pdf_to_text(file_path):
-    start_time = time.time()  # Record the start time
     doc = fitz.open(file_path)  # Open a document
-    text = ""
-    for page in doc:  # Iterate through the document pages
-        text += page.get_text()
-    end_time = time.time()  # Record the end time
-    elapsed_time = end_time - start_time
-    return text, elapsed_time
+    num_pages = len(doc)
+    return doc, num_pages
 
 def main():
-    st.title("Fast PDF Text Processing App")
+    st.title("PDF Text Processing App")
 
     uploaded_file = st.file_uploader("Upload a PDF file", type=["pdf"])
 
@@ -23,13 +18,20 @@ def main():
         with open(temp_file_path, "wb") as temp_file:
             temp_file.write(uploaded_file.read())
 
-        # Extract text and measure time
-        text, elapsed_time = pdf_to_text(temp_file_path)
+        # Extract text and get the number of pages
+        doc, num_pages = pdf_to_text(temp_file_path)
 
         # Display results
-        st.subheader(f"Time to load PDF: {elapsed_time:.2f} seconds")
-        st.subheader("Original Text:")
-        st.text(text)
+        st.subheader(f"Number of Pages: {num_pages}")
+
+        # Page navigation
+        page_number = st.slider("Select a Page", 1, num_pages, 1)
+
+        # Display content of the selected page
+        st.subheader(f"Page {page_number} Content:")
+        page = doc.load_page(page_number - 1)
+        page_text = page.get_text()
+        st.text(page_text)
 
 if __name__ == "__main__":
     main()
