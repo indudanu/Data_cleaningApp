@@ -5,7 +5,7 @@ import fitz # imports the pymupdf library
 # Function to convert PDF to text using pdfplumber
 def pdf_to_text(file_path):
     start_time = time.time()  # Record the start time
-    doc = fitz.open("example.pdf") # open a document
+    doc = fitz.open(file_path) # open a document
     for page in doc: # iterate the document pages
       text = page.get_text()
     end_time = time.time()  # Record the end time
