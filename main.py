@@ -1,6 +1,6 @@
 import streamlit as st
 import time
-import fitz
+import PyPDF2
 import tempfile
 
 def save_uploaded_file(uploaded_file):
@@ -11,13 +11,15 @@ def save_uploaded_file(uploaded_file):
         return temp_file_path
     return None
 
-# Function to convert PDF to text using pdfplumber
+# Function to convert PDF to text using PyMuPDF
 def pdf_to_text(file_path):
     start_time = time.time()  # Record the start time
-    doc = fitz.open(file_path) # open a document
     text = ""
-    for page in doc: # iterate the document pages
-        text += page.get_text()
+    with open(file_path, "rb") as file:
+        pdf_reader = PyPDF2.PdfReader(file)
+        for page_num in range(len(pdf_reader.pages)):
+            page = pdf_reader.pages[page_num]  # Replace getPage with pages
+            text += page.extract_text()
     end_time = time.time()  # Record the end time
     elapsed_time = end_time - start_time
     return text, elapsed_time
