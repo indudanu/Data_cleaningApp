@@ -1,13 +1,17 @@
 import streamlit as st
 import pdfplumber
+from langchain.document_loaders import PyMuPDFLoader
 # Function to convert PDF to text using pdfplumber
-def pdf_to_text(file_path):
+"""def pdf_to_text(file_path):
     with pdfplumber.open(file_path) as pdf:
         text = ''
         for page in pdf.pages:
             text += page.extract_text()
-    return text
-
+    return text"""
+def pdf_to_text(file_path):
+    loader = PyMuPDFLoader(file_path)
+    pages = loader.load()
+    return pages[0].page_content
 # Streamlit app
 def main():
     st.title("PDF Text Processing App")
